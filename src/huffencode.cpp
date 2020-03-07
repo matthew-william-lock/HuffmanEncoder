@@ -35,7 +35,13 @@ int main(int argc, char* argv[])
         inputFile.close();  
 
         LCKMAT002::HuffmanTree tree(frequencyMap);
-        // tree.printInorder();
+        cout<<"================PRINTING TREE================"<<endl;
+        tree.printInorder();
+        cout<<"============================================="<<endl<<endl;
+        cout<<"================Building Bitmap================"<<endl;
+        tree.buildCodeTable();
+        cout<<"Complete"<<endl;
+        cout<<"==============================================="<<endl<<endl;
         
 
     }
