@@ -32,6 +32,7 @@ namespace LCKMAT002
 
     private:
 
+    std::unordered_map<char,std::string> codeTable;
     std::shared_ptr<LCKMAT002::HuffmanNode> root;        
     std::priority_queue<LCKMAT002::HuffmanNode,std::vector<LCKMAT002::HuffmanNode>,myComparator> pQueue;
 
@@ -66,7 +67,8 @@ namespace LCKMAT002
     
     bool compare(const HuffmanNode& a, const HuffmanNode& b);
 
-
+    void printInorder(std::shared_ptr<LCKMAT002::HuffmanNode> node);
+    void printInorder();
 
     };  
  

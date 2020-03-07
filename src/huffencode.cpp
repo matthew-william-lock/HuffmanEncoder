@@ -35,7 +35,8 @@ int main(int argc, char* argv[])
         inputFile.close();  
 
         LCKMAT002::HuffmanTree tree(frequencyMap);
-        tree.printPqueue();
+        // tree.printInorder();
+        
 
     }
     else

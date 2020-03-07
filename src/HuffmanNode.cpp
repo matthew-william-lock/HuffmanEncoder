@@ -25,4 +25,24 @@ int HuffmanNode::getFreq() const{
     return this->freq;
 }
 
+std::shared_ptr<HuffmanNode> HuffmanNode::getLeftChild(){
+    return left;
+}
+
+std::shared_ptr<HuffmanNode> HuffmanNode::getRightChild(){
+    return right;
+}
+
+
+
+void HuffmanNode::setLeftChild(std::shared_ptr<HuffmanNode> left)
+{
+    this->left = left;
+}
+
+void HuffmanNode::setRightChild(std::shared_ptr<HuffmanNode> right)
+{
+    this->right=right;
+}
+
 }

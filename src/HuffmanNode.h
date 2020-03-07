@@ -30,12 +30,23 @@ namespace LCKMAT002
     // Char getter
     char getC() const;
 
-    // Freq getter
     int getFreq() const;
+
+    void setLeftChild(std::shared_ptr<HuffmanNode> left);
+
+    void setRightChild(std::shared_ptr<HuffmanNode> right);
+
+    std::shared_ptr<HuffmanNode> getLeftChild();
+
+    std::shared_ptr<HuffmanNode> getRightChild();
 
     };
 
+
+
     bool operator<(const HuffmanNode& lhs, const HuffmanNode& rhs); 
+
+;
     
    
 } // namespace LCKMAT002
