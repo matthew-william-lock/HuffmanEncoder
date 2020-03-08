@@ -1,4 +1,5 @@
 #include "HuffmanTree.h"
+#include <fstream>
 
 // Default Constructor
 LCKMAT002::HuffmanTree::HuffmanTree(const std::unordered_map<char,int> & frequencyMap)
@@ -55,10 +56,10 @@ LCKMAT002::HuffmanTree::HuffmanTree(const std::unordered_map<char,int> & frequen
     std::cout<<"Size of PQueue:"<<pQueue.size()<<std::endl;;
 }
 
-// Move Constructor
-LCKMAT002::HuffmanTree::HuffmanTree(HuffmanTree&& other) noexcept{
-    // *this = std::move(other);  // invoke move assignment operator
-}
+// // Move Constructor
+// LCKMAT002::HuffmanTree::HuffmanTree(HuffmanTree&& other) noexcept{
+//     *this = std::move(other);  // invoke move assignment operator
+// }
 
 // Destructort
 LCKMAT002::HuffmanTree::~HuffmanTree(){root=nullptr;}
@@ -134,6 +135,69 @@ void LCKMAT002::HuffmanTree::buildCodeTable(std::shared_ptr<LCKMAT002::HuffmanNo
 void LCKMAT002::HuffmanTree::buildCodeTable(){
     std::string code;
     buildCodeTable(root,code);    
+    
 }
+
+void LCKMAT002::HuffmanTree::buildBitString(const std::string &fileName){
+    bool success = buildBitString(codeTable,fileName);
+}
+
+bool LCKMAT002::HuffmanTree::buildBitString(const std::unordered_map<char,std::string> & bitmap,const std::string &fileName){
+
+    std::ifstream inputFile;
+    inputFile.open (fileName);
+
+    if (inputFile.is_open())
+    {
+        char c;
+        while (inputFile.get(c))
+        {
+            auto iterator = bitmap.find(c);
+            if (iterator!=bitmap.end())
+            {
+                bitString=bitString+iterator->second;
+                // std::cout<<c<<" "<<iterator->second<<std::endl;
+                // std::cout<<"bitstring:"<<std::endl<<bitString<<std::endl<<std::endl;
+
+            }
+            else 
+            {
+                std::cout<<"Something went wrong creating the bitstring"<<std::endl;
+                return false;
+            }                
+        }
+        inputFile.close();
+        std::cout<<"Final bitstring:"<<std::endl<<bitString<<std::endl;
+        return true;
+    }
+    std::cout << "Unable to open input file"; 
+    return false;
+}
+
+void LCKMAT002::HuffmanTree::writeBitString(const std::string &fileName){
+
+    std::string file="../bin/"+fileName;
+
+    std::ofstream outputFile;
+    outputFile.open (file);
+
+    if (outputFile.is_open())
+    {
+        for (size_t i = 0; i < bitString.length(); i++)
+        {
+            outputFile<<bitString.c_str()[i];
+        }
+        
+    }
+    else
+    {
+        std::cout<<"Something went wrong while writing the bitstream"<<std::endl;
+    }
+    
+    
+}
+
+
+
 
 

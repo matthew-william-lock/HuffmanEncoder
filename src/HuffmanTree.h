@@ -2,8 +2,9 @@
 #define HUFFMANTREE_H
 
 #include <iostream>
+#include <fstream>
 #include <queue>          // std::priority_queue
-#include <memory>
+#include <bits/stdc++.h> 
 #include <unordered_map>
 #include <functional>
 #include <vector>
@@ -40,6 +41,8 @@ namespace LCKMAT002
     
 
     void buildCodeTable(std::shared_ptr<LCKMAT002::HuffmanNode> node,std::string &code);
+    bool buildBitString(const std::unordered_map<char,std::string> & bitmap,const std::string &fileName);
+    void writeBitString();
 
 
     public:
@@ -76,6 +79,8 @@ namespace LCKMAT002
     void printInorder();
 
     void buildCodeTable();
+    void buildBitString(const std::string &fileName);
+    void writeBitString(const std::string &fileName);
     
 
     };  

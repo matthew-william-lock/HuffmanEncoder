@@ -1,20 +1,18 @@
 #include "HuffmanTree.h"
 
-#include <fstream>
-
 int main(int argc, char* argv[])
 {
     using namespace std;
 
-     if (argc<2)
+     if (argc<3)
      {
-        cout<<"usage: huffencode <inputFile><output file> "<<endl; 
+        cout<<"usage: huffencode <inputFile> <output file> "<<endl; 
         cout<<"usage: huffencode: error: too few arguments"<<endl;
         return 1;
      }
-     else if (argc>2)
+     else if (argc>3)
      {
-         cout<<"usage: huffencode <inputFile><output file> "<<endl; 
+         cout<<"usage: huffencode <inputFile> <output file> "<<endl; 
         cout<<"usage: huffencode: error: too many arguments"<<endl;
         return 1;
      }
@@ -42,6 +40,12 @@ int main(int argc, char* argv[])
         tree.buildCodeTable();
         cout<<"Complete"<<endl;
         cout<<"==============================================="<<endl<<endl;
+        cout<<"================BUILDING BITSTRING================"<<endl;
+        tree.buildBitString(argv[1]);
+        cout<<"==================================================="<<endl<<endl;
+        cout<<"================WRITING BITSTRING================"<<endl;
+        tree.writeBitString(argv[2]);
+        cout<<"================================================="<<endl<<endl;
         
 
     }
