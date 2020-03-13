@@ -50,6 +50,9 @@ namespace LCKMAT002
     // Special Members ===========================================================================================================
 
     // Default Constructor
+    HuffmanTree();
+
+    // Constructor
     HuffmanTree(const std::unordered_map<char,int> & frequencyMap);
 
     // Move Constructor

@@ -2,6 +2,14 @@
 #include <fstream>
 
 // Default Constructor
+LCKMAT002::HuffmanTree::HuffmanTree() {
+    this->bitString="";
+    this->root=nullptr;
+    this->codeTable =std::unordered_map<char,std::string>();
+    this->pQueue=std::priority_queue<LCKMAT002::HuffmanNode,std::vector<LCKMAT002::HuffmanNode>,myComparator>();
+}
+
+// Constructor
 LCKMAT002::HuffmanTree::HuffmanTree(const std::unordered_map<char,int> & frequencyMap)
 {
     using namespace std;
@@ -10,28 +18,37 @@ LCKMAT002::HuffmanTree::HuffmanTree(const std::unordered_map<char,int> & frequen
     auto it = frequencyMap.begin();
     while (it!=frequencyMap.end())
     {
-        // std::shared_ptr<HuffmanNode> newNode = std::make_shared<HuffmanNode>(it->first,it->second);
+
+        // cout<<"Point1"<<endl;
         HuffmanNode newNode(it->first,it->second);
+
+        // cout<<"Point2"<<endl;
         cout<<it->first<<":"<<it->second<<endl;
+
+        // cout<<"Point3"<<endl;
         pQueue.push(newNode);
+        
+        // cout<<"Point4"<<endl<<endl;
         it++;
     }    
     // printPqueue();
     int i =0;
+
+    std::cout<<"Check point"<<std::endl;
 
     while (pQueue.size()>1) // Create Tree
     {
         auto poppedNode= pQueue.top(); // Get smallest node
         pQueue.pop();                  // Pop the node
         std::shared_ptr<HuffmanNode> leftChild = std::make_shared<HuffmanNode>(poppedNode.getC(),poppedNode.getFreq()); // Make shared pointer to new node object
-        //std::shared_ptr<HuffmanNode> leftChild = std::make_shared<HuffmanNode>(poppedNode); // Make shared pointer to new node object
+        // std::shared_ptr<HuffmanNode> leftChild = std::make_shared<HuffmanNode>(poppedNode); // Make shared pointer to new node object
         leftChild->setLeftChild(poppedNode.getLeftChild());
         leftChild->setRightChild(poppedNode.getRightChild());
 
         poppedNode= pQueue.top(); // Get second smallest node
         pQueue.pop(); // Pop the node
         std::shared_ptr<HuffmanNode> rightChild = std::make_shared<HuffmanNode>(poppedNode.getC(),poppedNode.getFreq()); // Make shared pointer to new node object      
-        //std::shared_ptr<HuffmanNode> rightChild = std::make_shared<HuffmanNode>(poppedNode); // Make shared pointer to new node object
+        // std::shared_ptr<HuffmanNode> rightChild = std::make_shared<HuffmanNode>(poppedNode); // Make shared pointer to new node object
 
         rightChild->setLeftChild(poppedNode.getLeftChild());
         rightChild->setRightChild(poppedNode.getRightChild());
@@ -56,10 +73,34 @@ LCKMAT002::HuffmanTree::HuffmanTree(const std::unordered_map<char,int> & frequen
     std::cout<<"Size of PQueue:"<<pQueue.size()<<std::endl;;
 }
 
-// // Move Constructor
-// LCKMAT002::HuffmanTree::HuffmanTree(HuffmanTree&& other) noexcept{
-//     *this = std::move(other);  // invoke move assignment operator
-// }
+// Assignment Operator
+void LCKMAT002::HuffmanTree::operator=(const HuffmanTree &M ){
+    this->pQueue=M.pQueue;
+    this->root=M.root;
+    this->codeTable=M.codeTable;
+    this->bitString=M.bitString;
+}
+
+// Move Constructor
+LCKMAT002::HuffmanTree::HuffmanTree(HuffmanTree&& other) noexcept{
+    *this = std::move(other);  // invoke move assignment operator
+}
+
+// Copy Constructor
+LCKMAT002::HuffmanTree::HuffmanTree(const HuffmanTree& other){
+    *this = other;
+}
+
+// Move Assignment
+LCKMAT002::HuffmanTree& LCKMAT002::HuffmanTree::operator=(HuffmanTree&& other) noexcept{
+    if (this != &other) {
+      pQueue = std::move(other.pQueue);
+      root = std::move(other.root);
+      codeTable=std::move(other.codeTable);
+      bitString=std::move(other.bitString);
+    }
+    return *this;
+}
 
 // Destructort
 LCKMAT002::HuffmanTree::~HuffmanTree(){root=nullptr;}
@@ -174,8 +215,8 @@ bool LCKMAT002::HuffmanTree::buildBitString(const std::unordered_map<char,std::s
     return false;
 }
 
-void LCKMAT002::HuffmanTree::writeBitString(const std::string &fileName){
-
+void LCKMAT002::HuffmanTree::writeBitString(const std::string &fileName)
+{
     std::string file="../bin/"+fileName;
 
     std::ofstream outputFile;
@@ -188,16 +229,6 @@ void LCKMAT002::HuffmanTree::writeBitString(const std::string &fileName){
             outputFile<<bitString.c_str()[i];
         }
         
-    }
-    else
-    {
-        std::cout<<"Something went wrong while writing the bitstream"<<std::endl;
-    }
-    
-    
+    } else std::cout<<"Something went wrong while writing the bitstream"<<std::endl;
+
 }
-
-
-
-
-

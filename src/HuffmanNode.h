@@ -4,6 +4,7 @@
 
 
 #include <memory> // C++11
+#include <iostream>
 
 namespace LCKMAT002
 {
@@ -21,10 +22,28 @@ namespace LCKMAT002
 
     public:
 
+    // Default Constructor
+    HuffmanNode();
 
+    // Custom Constructor
     HuffmanNode(char c, int freq);
+
     ~HuffmanNode();
 
+    // Move Constructor
+    HuffmanNode(HuffmanNode&& other) noexcept;
+
+    // Assignment Operator
+    void operator=(const HuffmanNode &M );
+
+    // Move Assignment Operator
+    HuffmanNode& operator=(HuffmanNode&& other) noexcept;
+
+    // Copy Constructor
+    HuffmanNode(const HuffmanNode& other);
+    
+
+    // Smaller than operator
     friend bool operator<(const HuffmanNode& l, const HuffmanNode& r);    
 
     // Char getter
@@ -43,7 +62,7 @@ namespace LCKMAT002
     };
 
 
-
+    // Smaller than operator
     bool operator<(const HuffmanNode& lhs, const HuffmanNode& rhs); 
 
 ;
