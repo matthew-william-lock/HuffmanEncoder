@@ -51,11 +51,12 @@ HuffmanNode::HuffmanNode(const HuffmanNode& other){
 // Move Assignment
 HuffmanNode& HuffmanNode::operator=(HuffmanNode&& other) noexcept{
     if (this != &other) {
-      this->left=other.right;
+      this->left=other.left;
       this->right=other.right;
       this->c=other.c;
       this->freq=other.freq;
     }
+    // std::cout<<"MOVE"<<std::endl;
     return *this;
 }
 
@@ -70,21 +71,23 @@ int HuffmanNode::getFreq() const{
     return this->freq;
 }
 
-std::shared_ptr<HuffmanNode> HuffmanNode::getLeftChild(){
+// Get left child
+std::shared_ptr<HuffmanNode> HuffmanNode::getLeftChild() const{
     return left;
 }
 
-std::shared_ptr<HuffmanNode> HuffmanNode::getRightChild(){
+// Get right child
+std::shared_ptr<HuffmanNode> HuffmanNode::getRightChild() const{
     return right;
 }
 
-
-
+// Set left child
 void HuffmanNode::setLeftChild(std::shared_ptr<HuffmanNode> left)
 {
     this->left = left;
 }
 
+// Set right child
 void HuffmanNode::setRightChild(std::shared_ptr<HuffmanNode> right)
 {
     this->right=right;

@@ -22,6 +22,8 @@ namespace LCKMAT002
 
     public:
 
+    // Special Members ===========================================================================================================
+
     // Default Constructor
     HuffmanNode();
 
@@ -41,23 +43,21 @@ namespace LCKMAT002
 
     // Copy Constructor
     HuffmanNode(const HuffmanNode& other);
-    
+
+    //=============================================================================================================================      
 
     // Smaller than operator
     friend bool operator<(const HuffmanNode& l, const HuffmanNode& r);    
 
-    // Char getter
+    // Getters
     char getC() const;
-
     int getFreq() const;
+    std::shared_ptr<HuffmanNode> getLeftChild() const;
+    std::shared_ptr<HuffmanNode> getRightChild() const;
 
+    // Setters
     void setLeftChild(std::shared_ptr<HuffmanNode> left);
-
     void setRightChild(std::shared_ptr<HuffmanNode> right);
-
-    std::shared_ptr<HuffmanNode> getLeftChild();
-
-    std::shared_ptr<HuffmanNode> getRightChild();
 
     };
 

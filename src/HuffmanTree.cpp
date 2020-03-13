@@ -1,7 +1,9 @@
 #include "HuffmanTree.h"
 #include <fstream>
 
-// Default Constructor
+// Special Members ===========================================================================================================
+
+// Custom Constructor
 LCKMAT002::HuffmanTree::HuffmanTree() {
     this->bitString="";
     this->root=nullptr;
@@ -33,8 +35,6 @@ LCKMAT002::HuffmanTree::HuffmanTree(const std::unordered_map<char,int> & frequen
     }    
     // printPqueue();
     int i =0;
-
-    std::cout<<"Check point"<<std::endl;
 
     while (pQueue.size()>1) // Create Tree
     {
@@ -79,6 +79,7 @@ void LCKMAT002::HuffmanTree::operator=(const HuffmanTree &M ){
     this->root=M.root;
     this->codeTable=M.codeTable;
     this->bitString=M.bitString;
+    this->frequencyMap=M.frequencyMap;
 }
 
 // Move Constructor
@@ -98,7 +99,13 @@ LCKMAT002::HuffmanTree& LCKMAT002::HuffmanTree::operator=(HuffmanTree&& other) n
       root = std::move(other.root);
       codeTable=std::move(other.codeTable);
       bitString=std::move(other.bitString);
+      frequencyMap=std::move(other.frequencyMap);
     }
+    other.frequencyMap=std::unordered_map<char,int> ();
+    other.pQueue=std::priority_queue<LCKMAT002::HuffmanNode,std::vector<LCKMAT002::HuffmanNode>,myComparator>();
+    other.codeTable=std::unordered_map<char,std::string>();
+    other.root=nullptr;
+    other.bitString=std::string();
     return *this;
 }
 
@@ -120,6 +127,100 @@ void LCKMAT002::HuffmanTree::printPqueue(){
     
 };
 
+//=============================================================================================================================  
+
+// Build Frequency Table
+bool LCKMAT002::HuffmanTree:: buildFrequencymap(std::string fileName){
+    using namespace std;
+    ifstream inputFile;
+    inputFile.open (fileName);
+    if (inputFile.is_open())
+    {
+        char c;        
+        while (inputFile.get(c))
+        {
+            auto iterator = frequencyMap.find(c);
+            if (iterator!=frequencyMap.end()) iterator -> second++;
+            else frequencyMap[c]=1;                
+        }
+        inputFile.close(); 
+
+        //Print Result
+        std::cout<<"Number of characters:"<<frequencyMap.size()<<std::endl;
+        auto it = frequencyMap.begin();
+        while (it!=frequencyMap.end())
+        {
+            cout<<it->first<<":"<<it->second<<endl;
+            it++;
+        }
+    }
+    else
+    {
+        cout << "Unable to open input file"; 
+        return false;
+    }
+    return true; 
+}
+
+// Build Priority Queue
+bool LCKMAT002::HuffmanTree:: buildPriorityQueue(){
+    using namespace std;
+    if (frequencyMap.size()>1)
+    {
+        auto it = frequencyMap.begin();
+        while (it!=frequencyMap.end())
+        {
+            HuffmanNode newNode(it->first,it->second);
+            pQueue.push(newNode);
+            it++;
+        }
+        cout<<"COMPLETE"<<endl; 
+    }
+    else
+    {
+        cout<<"EMPTY FREQUENCY TABLE"<<endl;
+        return false;
+    }
+    return true;  
+}
+
+// Build Tree
+bool LCKMAT002::HuffmanTree:: buildTree(){
+    using namespace std;
+    if (pQueue.size()>1)
+    {
+        int i =1;
+        while (pQueue.size()>1) // Create Tree
+        {            
+            std::shared_ptr<HuffmanNode> leftChild = std::make_shared<HuffmanNode>(pQueue.top()); 
+            pQueue.pop();                                                                         
+
+            std::shared_ptr<HuffmanNode> rightChild = std::make_shared<HuffmanNode>(pQueue.top());
+            pQueue.pop(); 
+
+            HuffmanNode newNode('0',leftChild->getFreq() +rightChild->getFreq()); // Create new internal node
+            std::cout<<leftChild->getC() <<":"<<leftChild->getFreq() <<+" + "<< rightChild->getC() <<":"<< rightChild->getFreq()<<" = 0:"<<leftChild->getFreq()+rightChild->getFreq()<<endl ;
+            newNode.setLeftChild(leftChild); // Set left and right child of internal node
+            newNode.setRightChild(rightChild);
+            pQueue.push(newNode); //Push new node
+            i++;
+        }        
+        root = std::make_shared<HuffmanNode>(pQueue.top()); // Make shared pointer to new node object
+        cout<<"Pop left "<<root->getRightChild()->getC() <<":"<<root->getRightChild()->getFreq()<<endl;
+        pQueue.pop();                                       // Pop the node
+        std::cout<<"Queue node sum:"<<root->getFreq()<<std::endl;
+        std::cout<<"Leaf nodes:"<<i<<std::endl;
+        cout<<"COMPLETE"<<endl; 
+    }
+    else
+    {
+        cout<<"EMPTY PRIORITY QUEUE"<<endl;
+        return false;
+    }
+    return true;  
+}
+
+
 /* Given a binary tree, print its nodes in inorder*/
 void LCKMAT002::HuffmanTree:: printInorder(std::shared_ptr<LCKMAT002::HuffmanNode> node,int &i,std::string &code) 
 { 
@@ -131,17 +232,10 @@ void LCKMAT002::HuffmanTree:: printInorder(std::shared_ptr<LCKMAT002::HuffmanNod
         i++;
         return;
     }
-    
-
-    // if (node == nullptr) 
-    //     return; 
   
     /* first recur on left child */
     auto tempLeft=code+"0";
     printInorder(node->getLeftChild(),i,tempLeft); 
-  
-    /* then print the data of node */
-    // cout << node->getC()<<":"<<node->getFreq() << " "; 
   
     /* now recur on right child */
     auto tempRight=code+"1";
@@ -158,29 +252,34 @@ void LCKMAT002::HuffmanTree:: printInorder()
 } 
 
 void LCKMAT002::HuffmanTree::buildCodeTable(std::shared_ptr<LCKMAT002::HuffmanNode> node,std::string &code){
-
     if (node->getLeftChild()==nullptr&&node->getLeftChild()==nullptr)
     {
         codeTable[node->getC()]=code;
+        std::cout<<node->getC()<<":"<<code<<std::endl;
         return;
     }
-
     auto tempLeft=code+"0";
     buildCodeTable(node->getLeftChild(),tempLeft); 
-
     auto tempRight=code+"1";
     buildCodeTable(node->getRightChild(),tempRight);
-
 }
 
-void LCKMAT002::HuffmanTree::buildCodeTable(){
+// Build Code Table
+bool LCKMAT002::HuffmanTree::buildCodeTable(){
     std::string code;
-    buildCodeTable(root,code);    
-    
+    buildCodeTable(root,code);
+    if (codeTable.size()<1) {
+        std::cout<<"ERROR BUILDING CODE TABLE"<<std::endl;
+        return false;
+    }
+    std::cout<<"COMPLETE"<<std::endl;
+    return true; 
 }
 
-void LCKMAT002::HuffmanTree::buildBitString(const std::string &fileName){
+bool LCKMAT002::HuffmanTree::buildBitString(const std::string &fileName){
     bool success = buildBitString(codeTable,fileName);
+    if (!success) std::cout<<"Something went wrong creating the bitstring"<<std::endl;
+    return success;
 }
 
 bool LCKMAT002::HuffmanTree::buildBitString(const std::unordered_map<char,std::string> & bitmap,const std::string &fileName){
@@ -194,19 +293,11 @@ bool LCKMAT002::HuffmanTree::buildBitString(const std::unordered_map<char,std::s
         while (inputFile.get(c))
         {
             auto iterator = bitmap.find(c);
-            if (iterator!=bitmap.end())
-            {
-                bitString=bitString+iterator->second;
-                // std::cout<<c<<" "<<iterator->second<<std::endl;
-                // std::cout<<"bitstring:"<<std::endl<<bitString<<std::endl<<std::endl;
-
-            }
-            else 
-            {
-                std::cout<<"Something went wrong creating the bitstring"<<std::endl;
-                return false;
-            }                
+            if (iterator!=bitmap.end()) bitString=bitString+iterator->second;
+            else return false;
+               
         }
+        if (bitString.length()<1)return false;
         inputFile.close();
         std::cout<<"Final bitstring:"<<std::endl<<bitString<<std::endl;
         return true;
@@ -215,7 +306,7 @@ bool LCKMAT002::HuffmanTree::buildBitString(const std::unordered_map<char,std::s
     return false;
 }
 
-void LCKMAT002::HuffmanTree::writeBitString(const std::string &fileName)
+bool LCKMAT002::HuffmanTree::writeBitString(const std::string &fileName)
 {
     std::string file="../bin/"+fileName;
 
@@ -228,7 +319,32 @@ void LCKMAT002::HuffmanTree::writeBitString(const std::string &fileName)
         {
             outputFile<<bitString.c_str()[i];
         }
+    outputFile.close();
+    std::cout<<"COMPLETED"<<std::endl;
+    return true;
         
     } else std::cout<<"Something went wrong while writing the bitstream"<<std::endl;
+    return false;
 
 }
+
+std::unordered_map<char,int> LCKMAT002::HuffmanTree::getFrequencyMap()const{
+    return frequencyMap;
+}
+
+std::priority_queue<LCKMAT002::HuffmanNode,std::vector<LCKMAT002::HuffmanNode>,LCKMAT002::myComparator> LCKMAT002::HuffmanTree::getPQueue() const{
+    return pQueue;
+};
+
+std::unordered_map<char,std::string> LCKMAT002::HuffmanTree::getCodeTable() const{
+    return codeTable;
+}
+
+std::shared_ptr<LCKMAT002::HuffmanNode> LCKMAT002::HuffmanTree::getRoot() const{
+    return root;
+}
+
+std::string LCKMAT002::HuffmanTree::getBitString() const{
+    return bitString;
+}
+

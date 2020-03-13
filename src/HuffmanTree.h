@@ -33,17 +33,17 @@ namespace LCKMAT002
 
     private:
 
+    std::unordered_map<char,int> frequencyMap;
     std::priority_queue<LCKMAT002::HuffmanNode,std::vector<LCKMAT002::HuffmanNode>,myComparator> pQueue;
-    std::shared_ptr<LCKMAT002::HuffmanNode> root;        
-
     std::unordered_map<char,std::string> codeTable;
+    
+    std::shared_ptr<LCKMAT002::HuffmanNode> root;    
     std::string bitString;   
     
-
+    // Internal Calls
     void buildCodeTable(std::shared_ptr<LCKMAT002::HuffmanNode> node,std::string &code);
     bool buildBitString(const std::unordered_map<char,std::string> & bitmap,const std::string &fileName);
     void writeBitString();
-
 
     public:
 
@@ -75,22 +75,39 @@ namespace LCKMAT002
     ~HuffmanTree();
 
     //=============================================================================================================================   
+
+    // Getters
+    std::unordered_map<char,int> getFrequencyMap() const;
+    std::priority_queue<LCKMAT002::HuffmanNode,std::vector<LCKMAT002::HuffmanNode>,myComparator> getPQueue() const;
+    std::unordered_map<char,std::string> getCodeTable() const;
+    std::shared_ptr<LCKMAT002::HuffmanNode> getRoot() const;
+    std::string getBitString() const;
+
+    // Build Frequency map
+    bool buildFrequencymap(std::string fileName);
+
+    // Build Priority Queue
+    bool buildPriorityQueue();
+
+    // Build Tree
+    bool buildTree();
+
+    // Build Code Table
+    bool buildCodeTable();
+
+    // Build Bit String
+    bool buildBitString(const std::string &fileName);
+
+    // Write BitString
+    bool writeBitString(const std::string &fileName);
+
     
     bool compare(const HuffmanNode& a, const HuffmanNode& b);
 
     void printInorder(std::shared_ptr<LCKMAT002::HuffmanNode> node,int &i,std::string &code);
     void printInorder();
 
-    void buildCodeTable();
-    void buildBitString(const std::string &fileName);
-    void writeBitString(const std::string &fileName);
-    
-
     };  
- 
-    
-    
-    
 
 }
 #endif
