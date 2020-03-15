@@ -40,6 +40,7 @@ namespace LCKMAT002
     std::shared_ptr<LCKMAT002::HuffmanNode> root;    
     std::string bitString;   
     int bits;
+    std::string decodedBitString;
 
     
     // Internal Calls
@@ -80,6 +81,8 @@ namespace LCKMAT002
     std::unordered_map<char,std::string> getCodeTable() const;
     std::shared_ptr<LCKMAT002::HuffmanNode> getRoot() const;
     std::string getBitString() const;
+    std::string getString() const;
+    int getBits() const;
 
     // Build Frequency map
     bool buildFrequencymap(std::string fileName);

@@ -438,4 +438,53 @@ TEST_CASE("HuffmanTree BitString","[HuffmanTreeBitString]") {
 	std::cout.rdbuf(orig_buf);
 }
 
+TEST_CASE("HuffmanTree Decode Binary File","[HuffmanTreeDecodedBinaryFile]") {
+	// Prevent functions called from streaming to cout
+    std::streambuf* orig_buf = std::cout.rdbuf();
+    std::cout.rdbuf(NULL);
+
+	SECTION("Encoding File") {
+		HuffmanTree tree = HuffmanTree();
+		bool suc = tree.buildFrequencymap("../unitTesting/inputFile");
+		suc = tree.buildPriorityQueue();
+		suc = tree.buildTree();
+		suc = tree.buildCodeTable();
+		suc = tree.buildBitString("../unitTesting/inputFile");
+		suc = tree.writeBitString("unitTest");
+		suc = tree.buildBitstream("unitTest");	
+		REQUIRE(tree.getBitString()=="01111011110000101010");
+	}
+
+	SECTION("Decoding Code table") {
+		HuffmanTree tree = HuffmanTree();
+		bool suc = tree.decodeFile("unitTest");
+		REQUIRE(tree.getCodeTable().find('a')->second=="011"); 
+		REQUIRE(tree.getCodeTable().find('b')->second=="110");
+		REQUIRE(tree.getCodeTable().find('A')->second=="111");
+		REQUIRE(tree.getCodeTable().find('B')->second=="100");
+		REQUIRE(tree.getCodeTable().find('1')->second=="00");
+		REQUIRE(tree.getCodeTable().find('2')->second=="101");
+		REQUIRE(tree.getCodeTable().find('\n')->second=="010");
+	}
+
+	SECTION("Decompressing binary bitString") {
+		HuffmanTree tree = HuffmanTree();
+		bool suc = tree.decodeFile("unitTest");
+		suc = tree.buildDecodedBitString("unitTest");
+		REQUIRE(tree.getBitString()=="011110111100001010100000"); 	// MAkes up for 0 padding
+		REQUIRE(tree.getBits()==20); 								// Make sure correct number of bits will be read 
+		
+	}
+
+	SECTION("Decoding bitString") {
+		HuffmanTree tree = HuffmanTree();
+		bool suc = tree.decodeFile("unitTest");
+		suc = tree.buildDecodedBitString("unitTest");
+		suc= tree.decodeBitString("unitTestDecodedFile");
+		REQUIRE(tree.getString()=="abAB12");
+	}
+
+	std::cout.rdbuf(orig_buf);
+}
+
 }

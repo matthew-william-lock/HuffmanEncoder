@@ -464,6 +464,7 @@ bool LCKMAT002::HuffmanTree::decodeBitString(std::string outputFileName){
     }   
 
     cout<<"Decoded string:"<<endl<<decodedString<<endl;
+    decodedBitString=decodedString;
 
     ofstream outputfile;
     outputFileName="../bin/"+outputFileName;
@@ -501,5 +502,13 @@ std::shared_ptr<LCKMAT002::HuffmanNode> LCKMAT002::HuffmanTree::getRoot() const{
 
 std::string LCKMAT002::HuffmanTree::getBitString() const{
     return bitString;
+}
+
+std::string LCKMAT002::HuffmanTree::getString() const{
+    return decodedBitString;
+}
+
+int LCKMAT002::HuffmanTree::getBits() const{
+    return bits;
 }
 
