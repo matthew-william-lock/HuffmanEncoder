@@ -39,6 +39,7 @@ namespace LCKMAT002
     
     std::shared_ptr<LCKMAT002::HuffmanNode> root;    
     std::string bitString;   
+
     
     // Internal Calls
     void buildCodeTable(std::shared_ptr<LCKMAT002::HuffmanNode> node,std::string &code);
@@ -66,10 +67,6 @@ namespace LCKMAT002
 
     // Move Assignment Operator
     HuffmanTree& operator=(HuffmanTree&& other) noexcept;
-
-    // Print contents of Priority Queue
-    void printPqueue();
-
 
     // Destructor
     ~HuffmanTree();
@@ -101,11 +98,14 @@ namespace LCKMAT002
     // Write BitString
     bool writeBitString(const std::string &fileName);
 
-    
-    bool compare(const HuffmanNode& a, const HuffmanNode& b);
+    // Build BitStream
+    bool buildBitstream(std::string fileName);
 
-    void printInorder(std::shared_ptr<LCKMAT002::HuffmanNode> node,int &i,std::string &code);
-    void printInorder();
+    // Print contents of Priority Queue
+    void printPqueue();
+
+
+
 
     };  
 

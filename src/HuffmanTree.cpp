@@ -220,37 +220,6 @@ bool LCKMAT002::HuffmanTree:: buildTree(){
     return true;  
 }
 
-
-/* Given a binary tree, print its nodes in inorder*/
-void LCKMAT002::HuffmanTree:: printInorder(std::shared_ptr<LCKMAT002::HuffmanNode> node,int &i,std::string &code) 
-{ 
-    using namespace std;
-
-    if (node->getLeftChild()==nullptr&&node->getLeftChild()==nullptr)
-    {
-        cout << "LEAF("<<node->getC()<<":"<<node->getFreq() << " code:"<<code<<") "<<endl; 
-        i++;
-        return;
-    }
-  
-    /* first recur on left child */
-    auto tempLeft=code+"0";
-    printInorder(node->getLeftChild(),i,tempLeft); 
-  
-    /* now recur on right child */
-    auto tempRight=code+"1";
-    printInorder(node->getRightChild(),i,tempRight); 
-} 
-
-/* Given a binary tree, print its nodes in inorder*/
-void LCKMAT002::HuffmanTree:: printInorder()
-{ 
-    int i =0;
-    std::string code;
-    printInorder(root,i,code);
-    std::cout<<std::endl<<"Number of chars:"<<i<<std::endl; 
-} 
-
 void LCKMAT002::HuffmanTree::buildCodeTable(std::shared_ptr<LCKMAT002::HuffmanNode> node,std::string &code){
     if (node->getLeftChild()==nullptr&&node->getLeftChild()==nullptr)
     {
@@ -308,16 +277,28 @@ bool LCKMAT002::HuffmanTree::buildBitString(const std::unordered_map<char,std::s
 
 bool LCKMAT002::HuffmanTree::writeBitString(const std::string &fileName)
 {
+    // Write bitstring
     std::string file="../bin/"+fileName;
-
     std::ofstream outputFile;
     outputFile.open (file);
-
-    if (outputFile.is_open())
-    {
-        for (size_t i = 0; i < bitString.length(); i++)
-        {
+    if (outputFile.is_open()){
+        for (size_t i = 0; i < bitString.length(); i++){
             outputFile<<bitString.c_str()[i];
+        }
+    outputFile.close();
+    } 
+    else {
+        std::cout<<"Something went wrong while writing the bitstream"<<std::endl;
+        return false;
+    }
+
+    // Write headerfile
+    file="../bin/"+fileName+".hdr";
+    outputFile.open(file);
+    if (outputFile.is_open()){
+        outputFile<<codeTable.size()<<std::endl;
+        for (auto it =  codeTable.begin(); it !=codeTable.end(); it++){
+            outputFile<<it->first<<","<<it->second<<std::endl;
         }
     outputFile.close();
     std::cout<<"COMPLETED"<<std::endl;
@@ -326,6 +307,59 @@ bool LCKMAT002::HuffmanTree::writeBitString(const std::string &fileName)
     } else std::cout<<"Something went wrong while writing the bitstream"<<std::endl;
     return false;
 
+}
+
+// Build BitStream
+bool LCKMAT002::HuffmanTree::buildBitstream(std::string fileName){
+    using namespace std;
+
+    // Determine number of bytes
+    int N = (bitString.length()/8) + (bitString.length()%8 ? 1 : 0);
+    std::cout<<"N:"<<N<<std::endl;
+
+    // Create bitsream
+    unsigned char bitStream[N];
+    for (size_t i = 0; i < N-1; i++)
+    {
+        string code = bitString.substr(i*8,8);
+        std::bitset<8> byte(code);
+        unsigned char c = byte.to_ullong();
+        bitStream[i]=c;
+        cout<<code<<" "<<bitStream[i]<<endl;
+    }
+    
+    // Create last character of bitstream
+    {
+        string code = bitString.substr((N-1)*8,8);
+        // Determine how to fill last char of byte array
+        for (size_t i = 0; i < bitString.length()-(N-1)*8; i++){
+            code = code + "0";
+        }        
+        std::bitset<8> byte(code);
+        unsigned char c = byte.to_ullong();
+        bitStream[N]=c;
+        cout<<code<<" "<<bitStream[N]<<endl;
+    }
+
+    // Write binary File
+    ofstream binaryFile ("../bin/"+fileName+".raw", ios::out | ios::binary);
+
+    // Write int header
+    int length = bitString.length();
+    binaryFile.write(reinterpret_cast<const char *>(&length), sizeof(length));
+
+    if(!binaryFile)
+    {
+        cout<<"Failed to generate output file, check that bin file exists."<<endl;
+        return false;
+    }
+
+    for (size_t i = 0; i < N; i++)
+    {
+        binaryFile.write((char*)&bitStream[i], sizeof (bitStream[i]));
+    }
+    binaryFile.close();  
+    return true;
 }
 
 std::unordered_map<char,int> LCKMAT002::HuffmanTree::getFrequencyMap()const{

@@ -10,12 +10,23 @@ int main(int argc, char* argv[])
     cout<<"usage: huffencode: error: too few arguments"<<endl;
     return 1;
     }
-    else if (argc>3)
+    else if (argc>4)
     {
-        cout<<"usage: huffencode <inputFile> <output file> "<<endl; 
+    cout<<"usage: huffencode <inputFile> <output file> "<<endl; 
     cout<<"usage: huffencode: error: too many arguments"<<endl;
     return 1;
     }
+
+    if (argc==4)
+    {
+        if (argv[3]!="-d"){
+        cout<<"usage: huffencode <inputFile> <output file> "<<endl; 
+        cout<<"usage: huffencode: error: too many arguments"<<endl;
+        return 1;
+        }
+
+        return 0;
+    }   
 
     LCKMAT002::HuffmanTree tree;
 
@@ -36,6 +47,9 @@ int main(int argc, char* argv[])
     cout<<"==================================================="<<endl<<endl;
     cout<<"================WRITING BITSTRING================"<<endl;
     result=tree.writeBitString(argv[2]);
+    cout<<"================================================="<<endl<<endl;
+    cout<<"================BUILDING BITSTEAM================"<<endl;
+    result=tree.buildBitstream(argv[2]);
     cout<<"================================================="<<endl<<endl;
      
     if (!result){
