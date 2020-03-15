@@ -34,10 +34,15 @@ int main(int argc, char* argv[])
         result = tree.buildDecodedBitString(argv[1]);
         cout<<"================================================================"<<endl<<endl;
         cout<<"================DECODING BITSTRING====================="<<endl;
-        result = tree.decodeBitString(argv[1]);
+        result = tree.decodeBitString(argv[2]);
         cout<<"================================================================"<<endl<<endl;
 
-        return 0;
+        if (!result){
+        cout<<"An error occured during decoding"<<endl;
+        return 1;
+    }
+
+    return 0;
     }   
 
     LCKMAT002::HuffmanTree tree;

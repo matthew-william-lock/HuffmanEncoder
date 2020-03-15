@@ -466,19 +466,13 @@ bool LCKMAT002::HuffmanTree::decodeBitString(std::string outputFileName){
     cout<<"Decoded string:"<<endl<<decodedString<<endl;
     decodedBitString=decodedString;
 
-    ofstream outputfile;
-    outputFileName="../bin/"+outputFileName;
-    outputfile.open(outputFileName);
-
-    if (outputfile.is_open())
-    {
-        outputfile<<decodedString;
-        outputfile.close();
-    } else {
-        cout<<" Trouble writing decoded string to output file"<<endl;
-        return false;
+    string file="../bin/"+outputFileName;
+    std::ofstream outputFile;
+    outputFile.open(file);
+    if (outputFile.is_open()){
+        outputFile<<decodedString;
     }
-    
+    outputFile.close();  
 
     return true;
        

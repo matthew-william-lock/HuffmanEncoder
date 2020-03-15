@@ -45,11 +45,13 @@ TEST_CASE("Move Constructor","[HuffmanNodeMoveConstructor]") {
 		
 	}
 	SECTION("Post-call") {
-		auto node2 = std::move(node);
+		auto node2(std::move(node));
+
 		REQUIRE(node2.getC()=='a');
 		REQUIRE(node2.getFreq()==2);
 		REQUIRE(node.getC()==char());
 		REQUIRE(node.getFreq()==0);
+
 	}
 }
 
@@ -70,9 +72,12 @@ TEST_CASE("Assignment Operator","[HuffmanNodeAssignmentOperator]") {
 }
 
 TEST_CASE("Move Assignment Operator","[HuffmanNodeMoveAssignmentOperator]") {
-	HuffmanNode node = std::move(HuffmanNode('a',20));
+	HuffmanNode node1 = HuffmanNode('a',20);
+	HuffmanNode node = std::move(node1);
 	REQUIRE(node.getC()=='a');
 	REQUIRE(node.getFreq()==20);  
+	REQUIRE(node1.getC()==char());
+	REQUIRE(node1.getFreq()==0); 
 }
 
 TEST_CASE("< Operator","[HuffmanNode<Operator]") {
@@ -189,7 +194,7 @@ TEST_CASE("HuffmanTree Move Constructor","[HuffmanTreeMoveConstructor]") {
 		REQUIRE(tree.getBitString()=="01111011110000101010");
 	}
 	SECTION("Post-call") {
-		auto tree2 = std::move(tree);
+		auto tree2(std::move(tree));
 
 		REQUIRE(tree2.getFrequencyMap().size()==7); // Accounts for end of line char		
 		REQUIRE(tree2.getPQueue().size()==0);
