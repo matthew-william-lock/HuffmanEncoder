@@ -29,7 +29,7 @@ cd src
 ./huffencode <inputFile> <output file> [-d]
 ```
 
-# Usage
+## Usage
 The program can be used to encode files or decode existing compressed files. Encoding will be assumed unless specified otherwise when running the program.
 *Note: input file is assumed to be in src while the ASCII and binary output files are placed in the bin directory*
 
@@ -44,3 +44,17 @@ Optional arguments:
 | :------------------------ | :-------------|
 | -d | Enable file decompression where the file to be decompressed is <b>inputFile</b> and the output file is <b>output file</b>
 
+## Unit Testing
+The provided unit tests are exhaustive and test all various implemented member functions, as well as all functions (exlcuding those merely used to print to console and files) undergo a unit test. 
+
+**Step 1:** Compile unit tests
+```
+cd src
+make tests
+```
+
+**Step 2:** Run unit tests
+```
+cd src
+make test
+```
