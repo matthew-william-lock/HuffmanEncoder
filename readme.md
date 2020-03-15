@@ -5,10 +5,15 @@ This program implements the Huffman encoding algorithm to perform file compressi
 
 ## Source files
 **huffencode.cpp:** : Implement functionality of program
+
 **unitTests.cpp**: Implements unit testing for program
+
 **HuffmanTree.cpp:** : Implements functionality of HuffmanTree class. Methods implemented are used to build a frequency map, build the HuffmanTree structure using the HuffmanNode class, as well as methods to build a code table, build a bitsting and bitstream, and write these to an output file.
+
 **HuffmanTree.h**: Defines the HuffmanTree class
+
 **HuffmanNode.cpp**: Implements functionality of the HuffmanNode. This is the building block of the HuffmanTree class. This class includes special members, as well as methods for getting and setting the children and values of the HuffmanNode.
+
 **HuffmanNode.h**: Defines the HuffmanNode class
 
 ## Installation
