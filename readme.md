@@ -37,5 +37,5 @@ Required arguments
 Optional arguments:
 | Parameter                 | Description   |	
 | :------------------------ | :-------------|
-| -d | Enable file decompression where the file to be decompressed is <inputFile> and the output file is <output file>
+| -d | Enable file decompression where the file to be decompressed is <b>inputFile</b> and the output file is <b>output file</b>
 
