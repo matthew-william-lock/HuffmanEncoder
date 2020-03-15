@@ -39,6 +39,7 @@ namespace LCKMAT002
     
     std::shared_ptr<LCKMAT002::HuffmanNode> root;    
     std::string bitString;   
+    int bits;
 
     
     // Internal Calls
@@ -104,8 +105,14 @@ namespace LCKMAT002
     // Print contents of Priority Queue
     void printPqueue();
 
+    // Decode binary file using header
+    bool decodeFile(std::string fileName);
 
+    // Build decoded bitString
+    bool buildDecodedBitString(std::string inputFileName);
 
+    // Decode and write decoded bitString
+    bool decodeBitString(std::string outputFileName);
 
     };  
 

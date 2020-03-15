@@ -315,7 +315,7 @@ bool LCKMAT002::HuffmanTree::buildBitstream(std::string fileName){
 
     // Determine number of bytes
     int N = (bitString.length()/8) + (bitString.length()%8 ? 1 : 0);
-    std::cout<<"N:"<<N<<std::endl;
+    std::cout<<"Number of bytes:"<<N<<std::endl;
 
     // Create bitsream
     unsigned char bitStream[N];
@@ -325,7 +325,7 @@ bool LCKMAT002::HuffmanTree::buildBitstream(std::string fileName){
         std::bitset<8> byte(code);
         unsigned char c = byte.to_ullong();
         bitStream[i]=c;
-        cout<<code<<" "<<bitStream[i]<<endl;
+        // cout<<code<<" "<<bitStream[i]<<endl;
     }
     
     // Create last character of bitstream
@@ -337,8 +337,7 @@ bool LCKMAT002::HuffmanTree::buildBitstream(std::string fileName){
         }        
         std::bitset<8> byte(code);
         unsigned char c = byte.to_ullong();
-        bitStream[N]=c;
-        cout<<code<<" "<<bitStream[N]<<endl;
+        bitStream[N-1]=c;
     }
 
     // Write binary File
@@ -346,7 +345,8 @@ bool LCKMAT002::HuffmanTree::buildBitstream(std::string fileName){
 
     // Write int header
     int length = bitString.length();
-    binaryFile.write(reinterpret_cast<const char *>(&length), sizeof(length));
+    // binaryFile.write(reinterpret_cast<const char *>(&length), sizeof(length));
+    binaryFile.write((char*)&length,sizeof(length)); 
 
     if(!binaryFile)
     {
@@ -360,6 +360,127 @@ bool LCKMAT002::HuffmanTree::buildBitstream(std::string fileName){
     }
     binaryFile.close();  
     return true;
+}
+
+bool LCKMAT002::HuffmanTree::decodeFile(std::string fileName){
+
+    using namespace std;
+
+    // Write bitstring
+    std::string file="../bin/"+fileName+".hdr";
+    std::ifstream inputFile;
+    inputFile.open (file);
+    if (inputFile.is_open()){
+        string no ;
+        getline(inputFile, no);
+        int codes = stoi(no);
+        cout<<"Number of codes:"<<codes<<endl;
+
+        char c ;
+        for (size_t i = 0; i < codes; i++)
+        {
+            inputFile.get(c);           // Get char value
+            char charValue = c;         // Get char value
+            inputFile.get(c);
+            string code ;               
+            getline(inputFile, code);   // Get code for char
+            codeTable[charValue]=code;  // Build code table
+        }      
+        inputFile.close(); 
+        for (auto it = codeTable.begin(); it!=codeTable.end(); it++)
+        {
+            cout<<"\""<<it->first<<"\""<<":"<<it->second<<endl;
+        }              
+    }    
+    else {
+        std::cout<<"Something went wrong opening the header file"<<std::endl;
+        return false;
+    }
+    std::cout<<"COMPLETED"<<std::endl;
+    return true;
+}
+
+// Build decoded bitstring
+bool LCKMAT002::HuffmanTree::buildDecodedBitString(std::string inputFileName){
+    using namespace std;
+
+    inputFileName= "../bin/"+inputFileName+".raw";
+    ifstream fileStream(inputFileName, ios::binary);
+    
+    int numberOfbits;
+    int buf[sizeof(int)];
+    fileStream.read((char*)&numberOfbits,sizeof(numberOfbits));
+
+    cout<<"Number of bits:"<<numberOfbits<<endl;
+    if (numberOfbits<1)
+    {
+        cout<<"Error decoding binary file"<<endl;
+        return false;
+    }
+    bits = numberOfbits;    
+    string bitString;
+
+    int N = (bits/8) + (bits%8 ? 1 : 0);
+    cout<<"N:"<<N<<endl;
+
+    for (size_t i = 0; i < (N); i++)
+    {
+        char c;
+        fileStream.read((char*)&c,sizeof(c));
+        std::bitset<8> byte(c);
+        bitString = bitString + byte.to_string();
+    }    
+    cout<<"BitString:"<<bitString<<endl;
+    this->bitString=bitString;
+    return true;
+    
+}
+
+// Decode and write decoded bitString
+bool LCKMAT002::HuffmanTree::decodeBitString(std::string outputFileName){
+    using namespace std;
+    string decodedString;
+
+    int pos = 0;
+    int len = 1;
+    bool found = false;
+    while (bits-(pos+len)>0){
+        while (bits-(pos+len)>0){
+            string code = bitString.substr(pos,len);
+            for (auto i = codeTable.begin(); i!=codeTable.end() && ! found; i++)
+            {
+                if (i->second==code)
+                {
+                    decodedString = decodedString+i->first;
+                    pos=pos+len;
+                    len=0;                    
+                    found = true;
+                }                
+            }  
+            found = false;          
+            len++;            
+        }
+        pos++;
+    }   
+
+    cout<<"Decoded string:"<<endl<<decodedString<<endl;
+
+    ofstream outputfile;
+    outputFileName="../bin/"+outputFileName;
+    outputfile.open(outputFileName);
+
+    if (outputfile.is_open())
+    {
+        outputfile<<decodedString;
+        outputfile.close();
+    } else {
+        cout<<" Trouble writing decoded string to output file"<<endl;
+        return false;
+    }
+    
+
+    return true;
+       
 }
 
 std::unordered_map<char,int> LCKMAT002::HuffmanTree::getFrequencyMap()const{

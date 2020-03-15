@@ -19,11 +19,23 @@ int main(int argc, char* argv[])
 
     if (argc==4)
     {
-        if (argv[3]!="-d"){
+        if (string(argv[3])!=string("-d")){
         cout<<"usage: huffencode <inputFile> <output file> "<<endl; 
         cout<<"usage: huffencode: error: too many arguments"<<endl;
         return 1;
         }
+
+        LCKMAT002::HuffmanTree tree;
+
+        cout<<"================DECODING HEADER FILE====================="<<endl;
+        bool result = tree.decodeFile(argv[1]);
+        cout<<"========================================================="<<endl<<endl;
+        cout<<"================DECODINING BINARY FILE====================="<<endl;
+        result = tree.buildDecodedBitString(argv[1]);
+        cout<<"================================================================"<<endl<<endl;
+        cout<<"================DECODING BITSTRING====================="<<endl;
+        result = tree.decodeBitString(argv[1]);
+        cout<<"================================================================"<<endl<<endl;
 
         return 0;
     }   
